@@ -98,7 +98,7 @@ class Page(BeautifulSoup):
         self.usr = usr
         
         if "text/html" in r.headers['content-type']:
-            BeautifulSoup.__init__(self, r.content)
+            BeautifulSoup.__init__(self, r.content, "html.parser")
         else:
             self.content = r.content
         

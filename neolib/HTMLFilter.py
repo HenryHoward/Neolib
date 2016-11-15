@@ -48,6 +48,6 @@ class HTMLFilter(logging.Filter):
         ret += "\n\n\n" + str(pg.header) + "\n\n" + pg.content
         
         # Write the file
-        f = open(fileName, "w", encoding='utf-8')
-        f.write(ret)
+        f = open(fileName, "w")
+        f.write(ret.encode('ascii', 'ignore'))
         f.close()

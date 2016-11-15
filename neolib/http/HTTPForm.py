@@ -5,7 +5,7 @@
 .. moduleauthor:: Joshua Gilman <joshuagilman@gmail.com>
 """
 
-from urllib.parse import urlparse
+from urlparse import urlparse
 
 class HTTPForm:
     
