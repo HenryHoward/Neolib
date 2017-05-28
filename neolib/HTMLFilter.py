@@ -6,6 +6,7 @@
 """
 
 import logging
+from io import open  # Python2-3 compatibility for encoding kwarg
 from datetime import datetime
 
 class HTMLFilter(logging.Filter):

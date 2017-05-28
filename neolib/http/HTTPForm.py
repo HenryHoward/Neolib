@@ -5,7 +5,11 @@
 .. moduleauthor:: Joshua Gilman <joshuagilman@gmail.com>
 """
 
-from urllib.parse import urlparse
+# NOTE: COMPATIBILITY HACK (use future or six) -- future.standard_aliases ??
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 class HTTPForm:
     

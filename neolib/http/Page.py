@@ -70,26 +70,27 @@ class Page(BeautifulSoup):
                    "ACCEPT": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                    "ACCEPT-LANGUAGE": "en-us,en;q=0.5"}
     
-    def __init__(self, url, usr=None, session=None, postData=None, vars=None, proxy=None):
+    def __init__(self, url, usr=None, session=None, postData=None, params=None, vars=None, proxy=None):
         self.url = url
         self.postData = postData
+        self.params = params
         self.vars = vars
         
         if not session and not usr:
             if postData:
-                r = requests.post(url, data=postData, headers=vars, proxies=proxy)
+                r = requests.post(url, data=postData, params=params, headers=vars, proxies=proxy)
             else:
-                r = requests.get(url, headers=vars, proxies=proxy)
+                r = requests.get(url, params=params, headers=vars, proxies=proxy)
         elif usr:
             if postData:
-                r = usr.session.post(url, data=postData, headers=vars, proxies=proxy)
+                r = usr.session.post(url, data=postData, params=params, headers=vars, proxies=proxy)
             else:
-                r = usr.session.get(url, headers=vars, proxies=proxy)
+                r = usr.session.get(url, params=params, headers=vars, proxies=proxy)
         elif session:
             if postData:
-                r = session.post(url, data=postData, headers=vars, proxies=proxy)
+                r = session.post(url, data=postData, params=params, headers=vars, proxies=proxy)
             else:
-                r = session.get(url, headers=vars, proxies=proxy)
+                r = session.get(url, params=params, headers=vars, proxies=proxy)
         
         self.resp = r
         self.request = r.request
