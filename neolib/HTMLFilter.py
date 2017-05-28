@@ -6,6 +6,7 @@
 """
 
 import logging
+from io import open  # Python2-3 compatibility for encoding kwarg
 from datetime import datetime
 
 class HTMLFilter(logging.Filter):
@@ -49,5 +50,5 @@ class HTMLFilter(logging.Filter):
         
         # Write the file
         f = open(fileName, "w")
-        f.write(ret.encode('ascii', 'ignore'))
+        f.write(unicode(ret))
         f.close()
