@@ -237,7 +237,7 @@ class User:
         self.config.write()
         self.__loadConfig()
         
-    def getPage(self, url, postData = None, vars = None, usePin = False):
+    def getPage(self, url, postData=None, params=None, vars=None, usePin=False):
         """ Requests and returns a page using the user's session
         
         If useRef is set to true, automatically appends a referer using
@@ -277,7 +277,7 @@ class User:
         if bool(self.browserSync):
             self.__syncCookies()
         
-        pg = Page(url, usr=self, postData=postData, vars=vars, proxy=self.proxy)
+        pg = Page(url, usr=self, postData=postData, params=params, vars=vars, proxy=self.proxy)
         
         if self.browserSync:
             self.__writeCookies()
