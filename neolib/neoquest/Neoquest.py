@@ -32,6 +32,11 @@ class Neoquest(object):
     def __init__(self, usr):
         self.usr = usr
 
+        # If we keep these two parameters updated, that'd be convenient.
+        # TODO: wrap into convenience function?
+        self.curr_page = self.usr.getPage(NQ_URL)
+        self.curr_state = State(self.curr_page)
+
     # Functions this should have:
     # - start game
     # - grind until (level)
@@ -59,11 +64,29 @@ class Neoquest(object):
     def attack(self):
         """Just do a plain attack
         """
-        # TODO: NOT DONE - needs to submit a form on the page
-        # form name : ff
         # fields: 'fact' and 'type' (probably for different attack types)
         # basic moves are 'attack, 0', 'flee, 0', and 'noop, 0'
+        attack_form = self.curr_page.form(name='ff', method='post', action='neoquest.phtml')
 
+        # Plain attack?
+        attack_form['fact'] = 'attack' # attack, flee, noop, etc... (spell?)
+        attack_form['type'] = 0 # pretty sure this indicates "intensity/level" of attack
+        attack_form.submit()
+        self.curr_page = self.usr.getPage(NQ_URL)
+        self.curr_state = State(self.curr_page)
+        return self.curr_state
+
+
+    def end_fight(self):
+        """When you've won a battle, use this to pass the 'You won!' screen"""
+        # This function assumes it's being called at a time when you ARE already
+        # at the victory page.
+        end_fight_form = self.curr_page.form(action='neoquest.phtml', method='post')
+        end_fight_form['end_fight'] = 1
+        end_fight_form.submit()
+        self.curr_page = self.usr.getPage(NQ_URL)
+        self.curr_state = State(self.curr_page)
+        return self.curr_state
 
     # This doesn't even work how I want it to. I think it works for setting options.
     # (movetype, etc.)
