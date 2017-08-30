@@ -168,7 +168,7 @@ class Bank:
         # Checks if interest has been collected
         if not "not be able to collect" in pg.content and not "have already collected" in pg.content:
             try:
-                self.dailyInterest = pg.find("input", {'value': 'interest'}).find_next_sibling('input')['value'].split("(")[1].split(" NP)")[0]
+                self.dailyInterest = pg.find("input", {'value': 'interest'}).find_next()['value'].split("(")[1].split(" NP)")[0]
                 self.collectedInterest = False
             except Exception:
                 logging.getLogger("neolib.user").exception("Could not parse user's bank daily interest.", {'pg': pg})
