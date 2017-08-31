@@ -11,7 +11,8 @@ import logging
 
 
 class Action(object):
-    # TODO/NOTE: should be able to make an Action from also a form, maybe?
+    # TODO/NOTE:
+    # should be able to make an Action from also a form, maybe?
     def __init__(self, a_tag):
         self.param_string = a_tag.attrs['href'].split('?')[-1]
         self.description = a_tag.text
