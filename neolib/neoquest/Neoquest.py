@@ -111,3 +111,16 @@ class Neoquest(object):
             kwargs.update(params) 
         self._update(params=kwargs)
         return self.state
+
+    def local_action(self, index=0):
+        """Attempt to perform a local action based on the current state
+         - specify the index to perform a specific, non-first action
+        """
+        if self.state.local_actions:
+            # Don't forget to re-add the question mark!
+            url_params = '?' + self.state.local_actions[index].param_string
+        else:
+            return 'No possible local actions'
+
+        self._update(path=url_params) # Since it gives them url encoded.
+        return self.state
