@@ -7,12 +7,14 @@
 
 from munch import Munch
 
+from State import State
+
 NORMAL, EVIL, INSANE = 0, 1, 2  # difficulty codes
 FIRE, ICE, SHOCK, SPECTRAL, LIFE = 1, 2, 3, 4, 5  # skill codes
 DIR = Munch(zip(['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE'], range(1,9)))
+
 NQ_URL = 'http://www.neopets.com/games/neoquest/neoquest.phtml'
 
-from State import State
 
 class Neoquest(object):
 
@@ -33,9 +35,7 @@ class Neoquest(object):
         self.usr = usr
 
         # If we keep these two parameters updated, that'd be convenient.
-        # TODO: wrap into convenience function?
-        self.curr_page = self.usr.getPage(NQ_URL)
-        self.curr_state = State(self.curr_page)
+        self._update()
 
     # Functions this should have:
     # - start game
@@ -44,6 +44,9 @@ class Neoquest(object):
     # - beat milestones
     
     # We navigate the game by using the root url and query params.
+    def _update(self, path='', params=None):
+        self.page = self.usr.getPage(NQ_URL+path, params=params)
+        self.state = State(self.page)
 
     def start_game(self, difficulty=NORMAL, skill_build=None):
         """Start a new game with the given difficulty and skill build"""
@@ -58,35 +61,33 @@ class Neoquest(object):
     def move(self, direction=''):
         """Move one step in the given direction. If no direction is given, move in place.
         """
-        params = {'action': 'move', 'movedir': direction}
-        return State(self.usr.getPage(NQ_URL, params=params))
+        self.action('action', action_value='move', movedir=direction)
+        return self.state
 
     def attack(self):
         """Just do a plain attack
         """
         # fields: 'fact' and 'type' (probably for different attack types)
         # basic moves are 'attack, 0', 'flee, 0', and 'noop, 0'
-        attack_form = self.curr_page.form(name='ff', method='post', action='neoquest.phtml')
+        attack_form = self.page.form(name='ff', method='post', action='neoquest.phtml')
 
         # Plain attack?
         attack_form['fact'] = 'attack' # attack, flee, noop, etc... (spell?)
         attack_form['type'] = 0 # pretty sure this indicates "intensity/level" of attack
         attack_form.submit()
-        self.curr_page = self.usr.getPage(NQ_URL)
-        self.curr_state = State(self.curr_page)
-        return self.curr_state
+        self._update()
+        return self.state
 
 
     def end_fight(self):
         """When you've won a battle, use this to pass the 'You won!' screen"""
         # This function assumes it's being called at a time when you ARE already
         # at the victory page.
-        end_fight_form = self.curr_page.form(action='neoquest.phtml', method='post')
+        end_fight_form = self.page.form(action='neoquest.phtml', method='post')
         end_fight_form['end_fight'] = 1
         end_fight_form.submit()
-        self.curr_page = self.usr.getPage(NQ_URL)
-        self.curr_state = State(self.curr_page)
-        return self.curr_state
+        self._update()
+        return self.state
 
     # This doesn't even work how I want it to. I think it works for setting options.
     # (movetype, etc.)
@@ -106,5 +107,7 @@ class Neoquest(object):
 
         params = {action_type: action_value}
         if kwargs:
-            params.update(kwargs)
-        return State(self.usr.getPage(NQ_URL, params=params))
+            # Params should override kwargs, I believe
+            kwargs.update(params) 
+        self._update(params=kwargs)
+        return self.state
