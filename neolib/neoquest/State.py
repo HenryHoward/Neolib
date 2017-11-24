@@ -12,6 +12,7 @@ import logging
 
 from Action import Action
 
+
 def is_br(bs_tag):
     try:
         return bs_tag.is_empty_element
@@ -61,6 +62,8 @@ class State(object):
 
         # NOTE: there's a single grosso unicode char (for some state)
         self.raw_text = source_div.get_text().encode('ascii', 'ignore')
+        # TODO: parse out "Status" info separately, p sure it's always present
+        #  - looks like src_div has 2 parts: "before the center tag, and after"
         if 'attacked by' in self.raw_text:
             regex = State.BATTLE_SPLASH_REGEX
             self.mode = State.MODES.TRANSITION
@@ -86,7 +89,6 @@ class State(object):
 
         # TODO: is 'talk' screen part of overworld? Not really...
         elif 'say' in self.raw_text.lower():
-            print("I AM IN THE TALK MODE, so at least there's that")
             self.mode = State.MODES.TALK
             self.data, self.local_actions = self._parse_talk(self.src_div)
 
@@ -96,6 +98,7 @@ class State(object):
             self.data, self.local_actions = self._parse_overworld(self.src_div)
 
     def __str__(self):
+        # TODO: this is broken by mixing regex style & parse style MODES
         # nice_data = [
         #         re.sub('View.*', '', stats)
         #         for stats in self.data
@@ -104,7 +107,9 @@ class State(object):
         #         re.sub('\.', '. ', flavor)
         #         for flavor in nice_data
         #         ]
-        return ' '.join(self.data)
+        text = ' '.join(self.data)
+        actions = '\n'.join([' - {}'.format(a.description) for a in self.local_actions])
+        return '\n'.join([text, actions])
 
     def __repr__(self):
         return str(self)
@@ -117,8 +122,9 @@ class State(object):
         content = map(lambda l: filter(lambda t: not is_br(t), l), content)
         content = [item for sublist in content for item in sublist]
 
-        # NOTE/TODO: perhaps, convert the "a" tags into some meaningful little pieces
-        # of data???
+        # NOTE/TODO: convert the "a" tags into meaningful pieces of data???
+        # - actually do the splitting here on 'BR' tags
+        # - ALSO support turning the forms into actions or sth
         local_actions = [Action(a) for a in content if a.name=='a']
         content = map(
                 lambda c: c.text
