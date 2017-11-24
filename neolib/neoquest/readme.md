@@ -117,8 +117,6 @@ Ice seems to have nice offensive. glacier strike (highest level, gross)
 Never invest points into resurrection, you won't die :)
 
 ## Fighting
-Seems... mostly done! yowza!!! There is probably a lot of complicated stuff
-I can add, but... yay!
 
 
 # ETC Dev notes
@@ -128,27 +126,6 @@ I can add, but... yay!
     make it able to navigate & build a map file && REMEMBER LAST LOCATION.
     - graphml format?
     - python libraries for this?
-    - we have diagonal movement ...
+    - we have diagonal movement, so there are a LOT of potential edges. that's fine.
     - how do we know we've reached the ends of the maps, as opposed to not knowing
         that there may be an edge somewhere?
-
-
-#### Current Todos:
-- also, some kind of "Strategy" module
-    (ie. a sequence of skill points to allocate)
-    (and also possibly some kind of indication of where to grind, which order to complete milestones)
-- make state print nicer (as above)
-- make a "portal" move command - TODO: check if local action
-- inventory (action = items) + meaningful state
-- battle; using potions/etc (no local actions)
-- decide on how to know the value of a pot [ based on val = ogval * (1 + 0.1 x lifewep) ]? or parse?
-- make state/player parsing both: better AND smarter (fewer updates to independent objects, etc)
-- add testing?? does that even make sense?
-
-
-#### Done
-- make something that can tell you which movement mode you're in
-- make player better: split on pipes, and then like split on spaces/colons... well, i made it better...
-- create function that can perform a level up sequence
-- parse skills so you can know which level your skills are at
-- actually make level up work! (it does! yay!)
