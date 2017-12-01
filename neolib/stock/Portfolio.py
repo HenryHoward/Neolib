@@ -42,6 +42,12 @@ class Portfolio:
         data = {self.legend[i].lower(): data[i] for i in range(len(self.legend))}
         return data
 
+    def verify_sell_input_tag(self, input_tag):
+        return (
+            type(i.get('name')) == unicode and
+            i.get('name').startswith('sell[{}]'.format(ticker))
+            )
+
     def tickers(self):
         return [s.ticker for s in self.stocks]
 
@@ -84,10 +90,12 @@ class Portfolio:
         """ Sell the given amount of stock identified by ticker (if you have the shares!)
         """
         pagedata = self.usr.getPage("http://www.neopets.com/stockmarket.phtml?type=portfolio")
+        # 1 - this doesn't seem to work anymore
+        # 2 - it searches the entire page instead of like a content div
+        # re: 1. i'm assuming that the unicode check is probably what's doing it...
         inputs = [
                 i for i in pagedata.find_all('input')
-                if type(i.get('name')) == unicode and
-                i.get('name').startswith('sell[{}]'.format(ticker))
+                if self.verify_sell_input_tag(i)
                 ]
         remaining_input = amount
         payload = {}
