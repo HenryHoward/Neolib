@@ -11,6 +11,7 @@ from munch import Munch
 from State import State
 from Player import Player
 
+MV_MODE = Munch(zip(['NORMAL', 'HUNT', 'SNEAK'], range(1, 4)))
 NORMAL, EVIL, INSANE = 0, 1, 2  # difficulty codes
 FIRE, ICE, SHOCK, SPECTRAL, LIFE = 1, 2, 3, 4, 5  # skill codes
 DIR = Munch(zip(['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE'], range(1,9)))
@@ -63,11 +64,19 @@ class Neoquest(object):
 
     def move(self, direction=''):
         """Move one step in the given direction. If no direction is given, move in place.
+        Shorthand variables: DIR dict.
         """
         self.action('action', action_value='move', movedir=direction)
         return self.state
 
-    def attack(self):
+    def movement_mode(self, mode):
+        """Change movement mode: Possible values- 1, 2, 3 - normal, hunt, sneak
+        Shorthand variables: MV_MODE dict.
+        """
+        self.action('action', action_value='movetype', movedir=mode)
+        return self.state
+
+    def attack(self, atk_type=0):
         """Just do a plain attack
         """
         # fields: 'fact' and 'type' (probably for different attack types)
@@ -76,7 +85,7 @@ class Neoquest(object):
 
         # Plain attack?
         attack_form['fact'] = 'attack' # attack, flee, noop, etc... (spell?)
-        attack_form['type'] = 0 # pretty sure this indicates "intensity/level" of attack
+        attack_form['type'] = atk_type # pretty sure this indicates "intensity/level" of attack
         attack_form.submit()
         self._update()
         return self.state
@@ -92,15 +101,15 @@ class Neoquest(object):
         self._update()
         return self.state
 
-    # NOTE/TODO: this actually works also
-    # for properly ENTERING battle (or in other words, i forgot the flow to enter battle properly
+    # NOTE/TODO: this is a pretty general use command...
     def transition(self):
-        """When you've won a battle, use this to pass the 'You won!' screen
-        When you're entering battle, use this to pass the 'You are attacked by x' screen
-        When you've just leveled up 'YOU GAIN A NEW LEVEL'
+        """ When to use:
+         - When you've won a battle, to pass the 'You won!' screen
+         - When you're entering battle, to pass the 'You are attacked by x' screen
+         - When you've just leveled up, 'YOU GAIN A NEW LEVEL'
         """
-        # This function assumes it's being called at a time when you ARE already
-        # at the victory page.
+        # NOTE: if i had to guess, end_fight is actually not necessary
+        # (since it's only for, presumably, ending fights)
         end_fight_form = self.page.form(action='neoquest.phtml', method='post')
         end_fight_form['end_fight'] = 1
         end_fight_form.submit()
@@ -156,4 +165,3 @@ class Neoquest(object):
                 else:
                     self.attack()
                     logging.warn('Attacking...')
-
