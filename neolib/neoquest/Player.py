@@ -13,7 +13,6 @@ import logging
 
 class Player(object):
     def __init__(self, state):
-        """src_div as in the same one used for States"""
         self._update(state)
 
 
@@ -32,6 +31,7 @@ class Player(object):
         self.max_health = int(sdc[6][1:]) # does NOT need .string because it is a NavigableString
         self.exp = int(sdc[11].string)
 
+        # TODO: get this to work consistently
         # In overworld, it's 16. in battle, it's 17? wth?
         # could load it once, and not udpate since it doesn't change unless
         # you explicitly change it.
