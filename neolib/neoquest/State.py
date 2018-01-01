@@ -54,17 +54,17 @@ class State(object):
 
     def __init__(self, page):
         """State is constructed from a Page"""
-        source_div = page.find(
+        self.src_div = page.find(
                 "div", class_="contentModule phpGamesNonPortalView"
                ).find('div', class_='frame')
-        self.src_div = source_div
         self.local_actions = []
 
+
         # NOTE: there's a single grosso unicode char (for some state)
-        self.raw_text = source_div.get_text().encode('ascii', 'ignore')
+        self.raw_text = self.src_div.get_text().encode('ascii', 'ignore')
         # TODO: parse out "Status" info separately, p sure it's always present
         #  - looks like src_div has 2 parts: "before the center tag, and after"
-        if 'attacked by' in self.raw_text:
+        if 'You are attacked by' in self.raw_text:
             regex = State.BATTLE_SPLASH_REGEX
             self.mode = State.MODES.TRANSITION
             self.match_data = re.findall(regex, re.sub('\n', ' ', self.raw_text), flags=re.DOTALL)
@@ -98,15 +98,6 @@ class State(object):
             self.data, self.local_actions = self._parse_overworld(self.src_div)
 
     def __str__(self):
-        # TODO: this is broken by mixing regex style & parse style MODES
-        # nice_data = [
-        #         re.sub('View.*', '', stats)
-        #         for stats in self.data
-        #         ]
-        # nice_data = [
-        #         re.sub('\.', '. ', flavor)
-        #         for flavor in nice_data
-        #         ]
         text = ' '.join(self.data)
         actions = '\n'.join([' - {}'.format(a.description) for a in self.local_actions])
         return '\n'.join([text, actions])
@@ -153,6 +144,10 @@ class State(object):
         pass
 
     # Let's hope 1 function could cover both of these:
+    # - enter battle
+    # - leave battle
+    # well, i know them by the state regex thing but...
+    # i dont' really like that.
     def _parse_transition(self, src_div):
         pass
 
