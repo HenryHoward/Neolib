@@ -25,10 +25,14 @@ class Player(object):
         src_div = state.src_div
         sdc = src_div.contents[2].contents
         # based on in-battle, the userful player info is like:
-        player_stuff = sdc[:17]
-        self.name = sdc[1].text
-        self.level = int(sdc[3].text)
-        self.current_health = int(sdc[5].text)
-        self.max_health = int(sdc[6][1:]) # does NOT need .text because it is a NavigableString
-        self.exp = int(sdc[11].text)
-        self.difficulty = sdc[16].text
+        player_stuff = sdc[:18]
+        self.name = sdc[1].string
+        self.level = int(sdc[3].string)
+        self.current_health = int(sdc[5].string)
+        self.max_health = int(sdc[6][1:]) # does NOT need .string because it is a NavigableString
+        self.exp = int(sdc[11].string)
+
+        # In overworld, it's 16. in battle, it's 17? wth?
+        # could load it once, and not udpate since it doesn't change unless
+        # you explicitly change it.
+        self.difficulty = sdc[17].string
