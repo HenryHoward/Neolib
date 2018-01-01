@@ -129,3 +129,13 @@ Never invest points into resurrection, you won't die :)
     - we have diagonal movement, so there are a LOT of potential edges. that's fine.
     - how do we know we've reached the ends of the maps, as opposed to not knowing
         that there may be an edge somewhere?
+
+
+#### Current Todos:
+- create function that can perform a level up sequence
+  - (then, also, some kind of "Strategy" module)
+    (ie. a sequence of skill points to allocate)
+    (and also possibly some kind of indication of where to grind, which order to complete milestones)
+- make state print nicer (as above)
+- make a "portal" move command (local action maybe?)
+- make a hunt/sneak/normal movement mode command
