@@ -117,6 +117,8 @@ Ice seems to have nice offensive. glacier strike (highest level, gross)
 Never invest points into resurrection, you won't die :)
 
 ## Fighting
+Seems... mostly done! yowza!!! There is probably a lot of complicated stuff
+I can add, but... yay!
 
 
 # ETC Dev notes
@@ -137,5 +139,6 @@ Never invest points into resurrection, you won't die :)
     (ie. a sequence of skill points to allocate)
     (and also possibly some kind of indication of where to grind, which order to complete milestones)
 - make state print nicer (as above)
-- make a "portal" move command (local action maybe?)
-- make a hunt/sneak/normal movement mode command
+- make player better: split on pipes, and then like split on spaces/colons (GET THE MOVEMENT MODE)
+- make a "portal" move command - TODO: check if local action
+- make something that can tell you which movement mode you're in
