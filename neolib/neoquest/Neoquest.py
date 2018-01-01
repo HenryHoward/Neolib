@@ -5,6 +5,7 @@
 .. moduleauthor:: Kelly McBride <kemcbride28@gmail.com>
 """
 
+import logging
 from munch import Munch
 
 from State import State
@@ -80,12 +81,23 @@ class Neoquest(object):
         self._update()
         return self.state
 
+    def flee(self):
+        """Attempt to flee from battle
+        """
+        attack_form = self.page.form(name='ff', method='post', action='neoquest.phtml')
+
+        attack_form['fact'] = 'flee' # attack, flee, noop, etc... (spell?)
+        attack_form['type'] = 0
+        attack_form.submit()
+        self._update()
+        return self.state
 
     # NOTE/TODO: this actually works also
     # for properly ENTERING battle (or in other words, i forgot the flow to enter battle properly
-    def fight_transition(self):
+    def transition(self):
         """When you've won a battle, use this to pass the 'You won!' screen
         When you're entering battle, use this to pass the 'You are attacked by x' screen
+        When you've just leveled up 'YOU GAIN A NEW LEVEL'
         """
         # This function assumes it's being called at a time when you ARE already
         # at the victory page.
@@ -127,3 +139,21 @@ class Neoquest(object):
 
         self._update(path=url_params) # Since it gives them url encoded.
         return self.state
+
+    def auto_battle(self, threshold=5):
+        """Try to auto battle. Call this when you first enter the battle splash
+        """
+        while self.state.mode != 'OVERWORLD':
+            if self.state.mode == 'TRANSITION':
+                self.transition()
+                logging.warn('Transitioning...')
+            elif self.state.mode == 'BATTLE':
+                # battle loop: should only use a few basic criterion
+                if self.player.current_health <= threshold:
+                    # try to flee. this should work for now.. but i should think about using potions & stuff
+                    self.flee()
+                    logging.warn('Attempting to flee...')
+                else:
+                    self.attack()
+                    logging.warn('Attacking...')
+
