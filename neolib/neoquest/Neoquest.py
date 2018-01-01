@@ -8,6 +8,7 @@
 from munch import Munch
 
 from State import State
+from Player import Player
 
 NORMAL, EVIL, INSANE = 0, 1, 2  # difficulty codes
 FIRE, ICE, SHOCK, SPECTRAL, LIFE = 1, 2, 3, 4, 5  # skill codes
@@ -47,6 +48,7 @@ class Neoquest(object):
     def _update(self, path='', params=None):
         self.page = self.usr.getPage(NQ_URL+path, params=params)
         self.state = State(self.page)
+        self.player = Player(self.state)
 
     def start_game(self, difficulty=NORMAL, skill_build=None):
         """Start a new game with the given difficulty and skill build"""
@@ -79,8 +81,12 @@ class Neoquest(object):
         return self.state
 
 
-    def end_fight(self):
-        """When you've won a battle, use this to pass the 'You won!' screen"""
+    # NOTE/TODO: this actually works also
+    # for properly ENTERING battle (or in other words, i forgot the flow to enter battle properly
+    def fight_transition(self):
+        """When you've won a battle, use this to pass the 'You won!' screen
+        When you're entering battle, use this to pass the 'You are attacked by x' screen
+        """
         # This function assumes it's being called at a time when you ARE already
         # at the victory page.
         end_fight_form = self.page.form(action='neoquest.phtml', method='post')
@@ -98,12 +104,9 @@ class Neoquest(object):
          - action_value=1 indicates y/T
          - kwargs are passed thru onto params
         """
+        # If you've explicitly set it to None istead of '' for some reason
         if action_type is None or action_type.lower() == 'noop':
             action_type = ''
-
-        # If you've explicitly set it to None istead of '' for some reason
-        if action_value is None:
-            action_value = ''
 
         params = {action_type: action_value}
         if kwargs:
