@@ -179,5 +179,5 @@ class Neoquest(object):
         - only works if you HAVE a skill point free
         - only works if the skill is available wrt. the skill tree
         """
-        state = self.action('action', action_value='skill', skillchoice=skill_code)
+        state = self.action('action', action_value='skill', skillchoice=skill_code, confirm='1')
         return state
