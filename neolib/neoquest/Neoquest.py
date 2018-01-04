@@ -11,11 +11,13 @@ from munch import Munch
 from State import State
 from Player import Player
 
-MV_MODE = Munch(zip(['NORMAL', 'HUNT', 'SNEAK'], range(1, 4)))
+MV_MODE = Munch(zip(['Normal', 'Hunting', 'Sneaking'], range(1, 4)))
 NORMAL, EVIL, INSANE = 0, 1, 2  # difficulty codes
 FIRE, ICE, SHOCK, SPECTRAL, LIFE = 1, 2, 3, 4, 5  # skill codes
 DIR = Munch(zip(['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE'], range(1,9)))
 
+# OK, I'm gonna say this is a list of skill improvements to take. ie. ordered
+DEFAULT_SKILL_BUILD = []
 NQ_URL = 'http://www.neopets.com/games/neoquest/neoquest.phtml'
 
 
@@ -70,10 +72,14 @@ class Neoquest(object):
         return self.state
 
     def movement_mode(self, mode):
-        """Change movement mode: Possible values- 1, 2, 3 - normal, hunt, sneak
+        """Change movement mode:
+        Possible values - 'Normal', 'Hunting', 'Sneaking'
+        - 1, 2, 3
         Shorthand variables: MV_MODE dict.
         """
-        self.action('action', action_value='movetype', movedir=mode)
+        if mode == self.player.movement_mode:
+            logging.warn('Already in movement mode "{}"'.format(self.player.movement_mode))
+        self.action('action', action_value='movetype', movetype=MV_MODE[mode])
         return self.state
 
     def attack(self, atk_type=0):
@@ -116,24 +122,21 @@ class Neoquest(object):
         self._update()
         return self.state
 
-    # This doesn't even work how I want it to. I think it works for setting options.
-    # (movetype, etc.)
     def action(self, action_type, action_value=1, **kwargs):
         """Perform an 'action' in the game context.
          - action_type is the text name of the action to take
            (I've added a 'noop'/None type which moves in place)
          - action_value=1 indicates y/T
-         - kwargs are passed thru onto params
         """
         # If you've explicitly set it to None istead of '' for some reason
         if action_type is None or action_type.lower() == 'noop':
             action_type = ''
 
         params = {action_type: action_value}
-        if kwargs:
-            # Params should override kwargs, I believe
+        if kwargs: # params override kwargs
             kwargs.update(params) 
-        self._update(params=kwargs)
+            params = kwargs
+        self._update(params=params)
         return self.state
 
     def local_action(self, index=0):
@@ -160,8 +163,21 @@ class Neoquest(object):
                 # battle loop: should only use a few basic criterion
                 if self.player.current_health <= threshold:
                     # try to flee. this should work for now.. but i should think about using potions & stuff
-                    self.flee()
                     logging.warn('Attempting to flee...')
+                    self.flee()
                 else:
-                    self.attack()
                     logging.warn('Attacking...')
+                    self.attack()
+
+    def skills(self):
+        """Access the skills menu - ie. see your skill levels"""
+        state = self.action('action', action_value='skill')
+        return state
+
+    def skill_up(self, skill_code):
+        """Use a skill code (1001, 3004, etc) and I'll try to apply it
+        - only works if you HAVE a skill point free
+        - only works if the skill is available wrt. the skill tree
+        """
+        state = self.action('action', action_value='skill', skillchoice=skill_code)
+        return state

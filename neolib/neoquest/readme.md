@@ -134,11 +134,15 @@ I can add, but... yay!
 
 
 #### Current Todos:
-- create function that can perform a level up sequence
-  - (then, also, some kind of "Strategy" module)
+- also, some kind of "Strategy" module
     (ie. a sequence of skill points to allocate)
     (and also possibly some kind of indication of where to grind, which order to complete milestones)
 - make state print nicer (as above)
-- make player better: split on pipes, and then like split on spaces/colons (GET THE MOVEMENT MODE)
 - make a "portal" move command - TODO: check if local action
+
+
+#### Done (i am starting very late)
 - make something that can tell you which movement mode you're in
+- make player better: split on pipes, and then like split on spaces/colons... well, i made it better...
+- create function that can perform a level up sequence
+- parse skills so you can know which level your skills are at
