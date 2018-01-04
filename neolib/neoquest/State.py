@@ -5,6 +5,7 @@
 .. moduleauthor:: Kelly McBride <kemcbride28@gmail.com>
 """
 
+from collections import OrderedDict
 from munch import Munch
 import re
 import math
@@ -31,6 +32,9 @@ class State(object):
     BATTLE_SPLASH_REGEX = '\s*NeoQuest\s*(.*)(You are.*)'
     END_FIGHT_REGEX = '\s*NeoQuest\s*(.*)(You defeated.*)'
     BATTLE_REGEX = '\s*NeoQuest\s*(\w*.*Difficulty: [A-Z][a-z]+)(.*)<.*>(.*)'
+    OPTIONS_REGEX = '\s*MUSIC SETTINGS\s*'
+    SKILLS_REGEX = '\s*'
+    INVENTORY_REGEX = '\s*'
     ASCII_MAP = {
         'grassland': '.',
         'mountain': '^',
@@ -49,6 +53,9 @@ class State(object):
         'TALK': 'TALK',
         'BATTLE': 'BATTLE',
         'TRANSITION': 'TRANSITION',
+        'OPTIONS': 'OPTIONS',
+        'SKILLS': 'SKILLS',
+        'INVENTORY': 'INVENTORY',
         })
 
 
@@ -62,7 +69,6 @@ class State(object):
 
         # NOTE: there's a single grosso unicode char (for some state)
         self.raw_text = self.src_div.get_text().encode('ascii', 'ignore')
-        # TODO: parse out "Status" info separately, p sure it's always present
         #  - looks like src_div has 2 parts: "before the center tag, and after"
         if 'You are attacked by' in self.raw_text:
             regex = State.BATTLE_SPLASH_REGEX
@@ -75,22 +81,26 @@ class State(object):
             regex = State.END_FIGHT_REGEX
             self.mode = State.MODES.TRANSITION
             self.match_data = re.findall(regex, re.sub('\n', ' ', self.raw_text), flags=re.DOTALL)
-
-            # Clean up the results
             self.data = [a.strip() for m in self.match_data for a in m if a]
+
         elif 'Attack' in self.raw_text:
             regex = State.BATTLE_REGEX
             self.mode = State.MODES.BATTLE
-
             self.match_data = re.findall(regex, re.sub('\n', ' ', self.raw_text), flags=re.DOTALL)
-
-            # Clean up the results
             self.data = [a.strip() for m in self.match_data for a in m if a]
 
         # TODO: is 'talk' screen part of overworld? Not really...
         elif 'say' in self.raw_text.lower():
             self.mode = State.MODES.TALK
             self.data, self.local_actions = self._parse_talk(self.src_div)
+
+        elif 'MUSIC SETTINGS' in self.raw_text:
+            self.mode = State.MODES.OPTIONS
+            self.data, self.local_actions = self._parse_options(self.src_div)
+
+        elif 'information about specific skills' in self.raw_text:
+            self.mode = State.MODES.SKILLS
+            self.data, self.local_actions = self._parse_skills(self.src_div)
 
         else:
             regex = State.OVERWORLD_REGEX
@@ -113,10 +123,9 @@ class State(object):
         content = map(lambda l: filter(lambda t: not is_br(t), l), content)
         content = [item for sublist in content for item in sublist]
 
-        # NOTE/TODO: convert the "a" tags into meaningful pieces of data???
-        # - actually do the splitting here on 'BR' tags
-        # - ALSO support turning the forms into actions or sth
+        # Things you can DO at the place you're in:
         local_actions = [Action(a) for a in content if a.name=='a']
+        # Description/info about the place you're in:
         content = map(
                 lambda c: c.text
                 if (not type(c) == unicode and hasattr(c, 'text'))
@@ -149,8 +158,46 @@ class State(object):
     # well, i know them by the state regex thing but...
     # i dont' really like that.
     def _parse_transition(self, src_div):
-        pass
+        try:
+            return self._parse_talk(src_div)
+        except:
+            match_data = re.findall(regex, re.sub('\n', ' ', self.raw_text), flags=re.DOTALL)
+            data = [a.strip() for m in match_data for a in m if a]
+            return data, ['Continue thru transition']
 
+    def _parse_options(self, src_div):
+        match_data = re.findall(regex, re.sub('\n', ' ', self.raw_text), flags=re.DOTALL)
+        data = [a.strip() for m in match_data for a in m if a]
+        return data, ["Stupid settings that you don't need"]
+
+    def _parse_skills(self, src_div):
+        sdc = src_div.contents[2]
+
+        # idc that this is stupid
+        how_many = re.findall('.*(You currently have.*to spend\.).*', sdc.get_text(), flags=re.DOTALL)[0]
+        skill_tbs = sdc.find('table').find_all('table')
+
+        skills = {}
+        for tb in skill_tbs:
+            school = tb.contents[0].get_text().split('  ')[-1]
+            raw_levels = [t for t in tb.descendants
+                    # skill name
+                    if t.name =='font' or
+                    # skill value, exclude first thing
+                    (t.name =='td' and
+                        t.attrs.get('align') == 'center' and
+                        t.attrs.get('width') != '40'
+                        )]
+            skills[school] = OrderedDict()
+            for i in range(0, len(raw_levels), 2):
+                skills[school][raw_levels[i].get_text()] = raw_levels[i+1].get_text()
+
+        # Things you can DO at the place you're in: ie. potentially level up skills
+        local_actions = []
+        # Description/info about the place you're in:
+        content = [', '.join('{}: {}'.format(k,v) for k,v in sk.items()) for _,sk in skills.items()]
+        content.insert(0, how_many)
+        return content, local_actions
 
     def _create_ascii_map(self):
         def url_to_ascii(img_url):
