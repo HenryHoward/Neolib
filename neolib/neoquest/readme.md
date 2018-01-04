@@ -146,3 +146,4 @@ I can add, but... yay!
 - make player better: split on pipes, and then like split on spaces/colons... well, i made it better...
 - create function that can perform a level up sequence
 - parse skills so you can know which level your skills are at
+- actually make level up work
