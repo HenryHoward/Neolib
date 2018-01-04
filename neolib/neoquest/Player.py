@@ -12,6 +12,11 @@ import logging
 
 
 class Player(object):
+    """
+    Player should actually encompass things that change less frequently than the state.
+    Stuff that changes less frequently, like HP, MP (?), inventory (?), skill tree, EXP
+    - movement mode? sure, whatever...
+    """
     def __init__(self, state):
         self._update(state)
 
@@ -21,10 +26,10 @@ class Player(object):
 
 
     def _update(self, state):
-        src_div = state.src_div
-        sdc = src_div.contents[2].contents
+        sdc = [t for t in state.src_div.contents[2].contents if t.name != 'table']
+        self.sdc = sdc
+
         # based on in-battle, the userful player info is like:
-        player_stuff = sdc[:18]
         self.name = sdc[1].string
         self.level = int(sdc[3].string)
         self.current_health = int(sdc[5].string)
@@ -35,4 +40,6 @@ class Player(object):
         # In overworld, it's 16. in battle, it's 17? wth?
         # could load it once, and not udpate since it doesn't change unless
         # you explicitly change it.
-        self.difficulty = sdc[17].string
+        self.difficulty = sdc[16].string
+        # There are separator text elements '|', and if NOT selected, tag is 'a'
+        self.movement_mode = [t for t in sdc[22:27] if t.name == 'b'][0].string
