@@ -34,12 +34,13 @@ class Player(object):
         self.level = int(sdc[3].string)
         self.current_health = int(sdc[5].string)
         self.max_health = int(sdc[6][1:]) # does NOT need .string because it is a NavigableString
-        self.exp = int(sdc[11].string)
+        self.exp = int(filter(lambda c: c.isdigit(), sdc[11].string))
 
         # TODO: get this to work consistently
         # In overworld, it's 16. in battle, it's 17? wth?
         # could load it once, and not udpate since it doesn't change unless
         # you explicitly change it.
-        self.difficulty = sdc[16].string
+        self.difficulty = sdc[16].string if state.mode == 'BATTLE' else sdc[17]
         # There are separator text elements '|', and if NOT selected, tag is 'a'
-        self.movement_mode = [t for t in sdc[22:27] if t.name == 'b'][0].string
+        if state.mode == 'OVERWORLD':
+            self.movement_mode = [t for t in sdc[22:27] if t.name == 'b'][0].string
