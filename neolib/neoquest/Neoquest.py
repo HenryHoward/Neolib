@@ -175,9 +175,12 @@ class Neoquest(object):
         return state
 
     def skill_up(self, skill_code):
+        # TODO: this... seems to only work when I do it manually...
+        # TEST: ok, so i wrote "skillchocie' instead of "skill_choice" so, that's prboably why
         """Use a skill code (1001, 3004, etc) and I'll try to apply it
         - only works if you HAVE a skill point free
         - only works if the skill is available wrt. the skill tree
         """
-        state = self.action('action', action_value='skill', skillchoice=skill_code, confirm='1')
-        return state
+        # NOTE: THIS LINE IS NOT NECESSARY MAYBE?
+        # self.action('action', action_value='skill', skill_choice=skill_code)
+        return self.action('action', action_value='skill', skill_choice=skill_code, confirm=1)
