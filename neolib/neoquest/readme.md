@@ -139,6 +139,10 @@ I can add, but... yay!
     (and also possibly some kind of indication of where to grind, which order to complete milestones)
 - make state print nicer (as above)
 - make a "portal" move command - TODO: check if local action
+- inventory (action = items)
+- battle; using potions/etc (what local actions are already there?)
+- make state/player parsing both: better AND smarter (fewer updates to independent objects, etc)
+- add testing?? does that even make sense?
 
 
 #### Done (i am starting very late)
@@ -146,4 +150,4 @@ I can add, but... yay!
 - make player better: split on pipes, and then like split on spaces/colons... well, i made it better...
 - create function that can perform a level up sequence
 - parse skills so you can know which level your skills are at
-- actually make level up work
+- actually make level up work... [ in testing ]
