@@ -128,7 +128,7 @@ I can add, but... yay!
     make it able to navigate & build a map file && REMEMBER LAST LOCATION.
     - graphml format?
     - python libraries for this?
-    - we have diagonal movement, so there are a LOT of potential edges. that's fine.
+    - we have diagonal movement ...
     - how do we know we've reached the ends of the maps, as opposed to not knowing
         that there may be an edge somewhere?
 
@@ -139,15 +139,16 @@ I can add, but... yay!
     (and also possibly some kind of indication of where to grind, which order to complete milestones)
 - make state print nicer (as above)
 - make a "portal" move command - TODO: check if local action
-- inventory (action = items)
-- battle; using potions/etc (what local actions are already there?)
+- inventory (action = items) + meaningful state
+- battle; using potions/etc (no local actions)
+- decide on how to know the value of a pot [ based on val = ogval * (1 + 0.1 x lifewep) ]? or parse?
 - make state/player parsing both: better AND smarter (fewer updates to independent objects, etc)
 - add testing?? does that even make sense?
 
 
-#### Done (i am starting very late)
+#### Done
 - make something that can tell you which movement mode you're in
 - make player better: split on pipes, and then like split on spaces/colons... well, i made it better...
 - create function that can perform a level up sequence
 - parse skills so you can know which level your skills are at
-- actually make level up work... [ in testing ]
+- actually make level up work! (it does! yay!)

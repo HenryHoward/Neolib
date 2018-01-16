@@ -15,6 +15,7 @@ MV_MODE = Munch(zip(['Normal', 'Hunting', 'Sneaking'], range(1, 4)))
 NORMAL, EVIL, INSANE = 0, 1, 2  # difficulty codes
 FIRE, ICE, SHOCK, SPECTRAL, LIFE = 1, 2, 3, 4, 5  # skill codes
 DIR = Munch(zip(['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE'], range(1,9)))
+POTS = Munch(zip(['W'], [220000]))
 
 # OK, I'm gonna say this is a list of skill improvements to take. ie. ordered
 DEFAULT_SKILL_BUILD = []
@@ -39,7 +40,6 @@ class Neoquest(object):
     def __init__(self, usr):
         self.usr = usr
 
-        # If we keep these two parameters updated, that'd be convenient.
         self._update()
 
     # Functions this should have:
@@ -86,24 +86,33 @@ class Neoquest(object):
         """Just do a plain attack
         """
         # fields: 'fact' and 'type' (probably for different attack types)
-        # basic moves are 'attack, 0', 'flee, 0', and 'noop, 0'
-        attack_form = self.page.form(name='ff', method='post', action='neoquest.phtml')
+        form = self.page.form(name='ff', method='post', action='neoquest.phtml')
 
-        # Plain attack?
-        attack_form['fact'] = 'attack' # attack, flee, noop, etc... (spell?)
-        attack_form['type'] = atk_type # pretty sure this indicates "intensity/level" of attack
-        attack_form.submit()
+        form['fact'] = 'attack' # attack, flee, noop, etc... (spell?)
+        form['type'] = atk_type # pretty sure this indicates "intensity/level" of attack
+        form.submit()
+        self._update()
+        return self.state
+
+    def item(self, item_code):
+        """Use an item **IN BATTLE**
+        - example item codes:
+            - weak healing pot: 220000
+        """
+        form = self.page.form(name='ff', method='post', action='neoquest.phtml')
+        form['fact'] = 'item'
+        form['type'] = item_code
+        form.submit()
         self._update()
         return self.state
 
     def flee(self):
         """Attempt to flee from battle
         """
-        attack_form = self.page.form(name='ff', method='post', action='neoquest.phtml')
-
-        attack_form['fact'] = 'flee' # attack, flee, noop, etc... (spell?)
-        attack_form['type'] = 0
-        attack_form.submit()
+        form = self.page.form(name='ff', method='post', action='neoquest.phtml')
+        form['fact'] = 'flee'
+        form['type'] = 0
+        form.submit()
         self._update()
         return self.state
 
