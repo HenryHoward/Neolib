@@ -20,8 +20,8 @@ class UserInventory(Inventory):
     in a user's inventory upon initialization.
         
     Example
-       >>> usr.loadInventory
-       >>> for item in usr.inventory:
+       >>> usr.inventory.load()
+       >>> for item in usr.inventory.items():
        ...     print item.name
        Blue Kougra Plushie
        Lu Codestone
@@ -35,7 +35,27 @@ class UserInventory(Inventory):
             raise invalidUser
             
         self.usr = usr
+        self.items = {}
+        self.cash_items = {}
             
+    def parse_items(self, element):
+        """Parse the items out of a given element and return the item dict"""
+        inv = {}
+        for row in element.table.find_all("tr"):
+            for item in row.find_all("td"):
+                name = item.text
+                
+                # Some item names contain extra information encapsulated in paranthesis
+                if "(" in name:
+                    name = name.split("(")[0]
+                
+                tmpItem = Item(name)
+                tmpItem.id = item.a['onclick'].split("(")[1].replace(");", "")
+                tmpItem.img = item.img['src']
+                tmpItem.desc = item.img['alt']
+                tmpItem.usr = self.usr
+                inv[name] = tmpItem
+        return inv
 
     def load(self):
         """Loads a user's inventory
@@ -52,7 +72,6 @@ class UserInventory(Inventory):
           invalidUser
           parseException
         """
-        self.items = {}
         pg = self.usr.getPage("http://www.neopets.com/objects.phtml?type=inventory")
         
         # Indicates an empty inventory
@@ -60,21 +79,9 @@ class UserInventory(Inventory):
             return
         
         try:
-            for row in pg.find_all("td", "contentModuleContent")[1].table.find_all("tr"):
-                for item in row.find_all("td"):
-                    name = item.text
-                    
-                    # Some item names contain extra information encapsulated in paranthesis
-                    if "(" in name:
-                        name = name.split("(")[0]
-                    
-                    tmpItem = Item(name)
-                    tmpItem.id = item.a['onclick'].split("(")[1].replace(");", "")
-                    tmpItem.img = item.img['src']
-                    tmpItem.desc = item.img['alt']
-                    tmpItem.usr = self.usr
-                    
-                    self.items[name] = tmpItem
+            self.items = self.parse_items(pg.find_all("td", "contentModuleContent")[0])
+            self.cash_items = self.parse_items(pg.find_all("td", "contentModuleContent")[1])
+
         except Exception:
             logging.getLogger("neolib.inventory").exception("Unable to parse user inventory.", {'pg': pg})
             raise parseException
