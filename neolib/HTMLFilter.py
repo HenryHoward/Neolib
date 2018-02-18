@@ -50,5 +50,5 @@ class HTMLFilter(logging.Filter):
         
         # Write the file
         f = open(fileName, "w")
-        f.write(ret.encode('ascii', 'ignore'))
+        f.write(unicode(ret))
         f.close()
