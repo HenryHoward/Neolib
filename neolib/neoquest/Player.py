@@ -38,9 +38,7 @@ class Player(object):
         # NOTE/TODO: This is very weird...
         # on jan 29, 2018, having rebased on master... this just isn't working, straight up
         # like, at all
-
-        exp_idx = 11 if len(sdc) >= 12 else 10
-        self.exp = int(filter(lambda c: c.isdigit(), sdc[exp_idx].string))
+        self.exp = int(filter(lambda c: c.isdigit(), sdc[11].string))
 
         # TODO: get this to work consistently
         # In overworld, it's 16. in battle, it's 17? wth?
