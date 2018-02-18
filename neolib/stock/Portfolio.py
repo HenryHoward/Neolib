@@ -42,10 +42,10 @@ class Portfolio:
         data = {self.legend[i].lower(): data[i] for i in range(len(self.legend))}
         return data
 
-    def verify_sell_input_tag(self, input_tag):
+    def verify_sell_input_tag(self, input_tag, ticker):
         return (
-            type(i.get('name')) == unicode and
-            i.get('name').startswith('sell[{}]'.format(ticker))
+            type(input_tag.get('name')) == unicode and
+            input_tag.get('name').startswith('sell[{}]'.format(ticker))
             )
 
     def tickers(self):
@@ -95,7 +95,7 @@ class Portfolio:
         # re: 1. i'm assuming that the unicode check is probably what's doing it...
         inputs = [
                 i for i in pagedata.find_all('input')
-                if self.verify_sell_input_tag(i)
+                if self.verify_sell_input_tag(i, ticker)
                 ]
         remaining_input = amount
         payload = {}

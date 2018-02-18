@@ -7,6 +7,10 @@
 
 from Stock import Stock
 
+
+BARGAIN_STOCKS_URL = "http://www.neopets.com/stockmarket.phtml?type=list&search=+-invalid_characters-+&bargain=true"
+
+
 class BargainStocks:
 
     """Provides an interface for loading bargain stocks
@@ -34,7 +38,6 @@ class BargainStocks:
     """
 
     usr = None
-    BARGAIN_STOCKS_URL = "http://www.neopets.com/stockmarket.phtml?type=list&search=+-invalid_characters-+&bargain=true"
 
     def extract_row_data(self, row):
         cells = row.find_all('td')
