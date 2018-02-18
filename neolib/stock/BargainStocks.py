@@ -34,6 +34,7 @@ class BargainStocks:
     """
 
     usr = None
+    BARGAIN_STOCKS_URL = "http://www.neopets.com/stockmarket.phtml?type=list&search=+-invalid_characters-+&bargain=true"
 
     def extract_row_data(self, row):
         cells = row.find_all('td')
@@ -48,7 +49,7 @@ class BargainStocks:
     def load(self):
         """ Loads bargain stocks
         """
-        self.pagedata = self.usr.getPage("http://www.neopets.com/stockmarket.phtml?type=list&bargain=true")
+        self.pagedata = self.usr.getPage(BARGAIN_STOCKS_URL)
         self.table = self.pagedata.find_all("table")[3].find_all('table')[4]
         rows = self.table.find_all('tr')
         self.legend = [
