@@ -6,7 +6,8 @@
 """
 
 
-# TODO: add ways to get info for all pets of a user
+import re
+
 
 class Pet:
     
@@ -51,7 +52,6 @@ class Pet:
         self.name = pet_sidebar.find('td', class_='sidebarHeader medText').text
         pet_info = self.__create_petinfo_map(
                 pet_sidebar.find('td', class_='activePetInfo'))
-        print pet_info
         self.species = pet_info['species']
         self.health = pet_info['health']
         self.mood = pet_info['mood']
@@ -59,3 +59,25 @@ class Pet:
         self.age = pet_info['age']
         self.level = pet_info['level']
 
+
+def get_pet_names(pets_div):
+    wrapper_div = pets_div.find('div', id='bxwrap')
+    # NOTE: i could just use these links
+    links = [a['href'] for a in wrapper_div.find_all('a')]
+    names = [re.search('.*pet=([^"]+)', l).groups(0)[0] for l in links]
+    return names
+
+
+def get_pets(usr):
+    userlookup = usr.getPage('http://www.neopets.com/userlookup.phtml?user={}'.format(usr.username))
+    # parse out petnames using div id=userneopets
+    pets_div = userlookup.find('div', id='userneopets')
+
+    pet_names = get_pet_names(pets_div)
+    for pet_name in pet_names:
+        # another option is using quickref.phtml, div content, each div has id "petname_details"
+        # lookups do NOT include hunger, happiness
+        petlookup = usr.getPage('http://www.neopets.com/petlookup.phtml?pet={}'.format(pet_name))
+
+    # NOTE: this gives way more info than the summary active pet sidebar module (shrug)
+    return pet_names
