@@ -7,11 +7,9 @@
 
 from neolib.exceptions import parseException
 from neolib.exceptions import invalidUser
-from neolib.http.HTTPForm import HTTPForm
 from neolib.inventory.Inventory import Inventory
 from neolib.item.Item import Item
 import logging
-from bs4 import element
 
 class UserInventory(Inventory):
      
