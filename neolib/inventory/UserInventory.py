@@ -61,32 +61,6 @@ class UserInventory(Inventory):
                 inv[name] = tmpItem
         return inv
 
-    def feed(self, item_name, pet_name):
-        item_id = self.items[item_name].id
-        feed_form_value = "Feed to {}".format(pet_name)
-        item_url = 'http://www.neopets.com/iteminfo.phtml?obj_id={}'.format(item_id)
-
-        # This isn't exactly obvious, but I'm raw-creating
-        # this Form object and populating it on my own. because i basically
-        # want to avoid actually doing a request to load the item thing if I
-        # already know what I need
-
-        # TODO: null tag thing is stupid and bad
-        null_tag = element.Tag(name='null')
-        item_form = HTTPForm(self.usr, item_url, null_tag) # null_tag for the "content"
-
-        item_form.name = 'item_form'
-        item_form.action = 'useobject.phtml'
-        item_form.method = 'post'
-        item_form['action'] = feed_form_value # i'm skeptical...
-        item_form['obj_id'] = item_id
-        item_form['submit'] = 'Submit'
-
-        # NOTE - if you feed /consume an item, perhaps you need to reload inv
-        # or add like, a, flag, "consumed"
-        result = item_form.submit()
-        return result
-
     def load(self):
         """Loads a user's inventory
        

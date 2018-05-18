@@ -70,6 +70,9 @@ class Item:
     GALLERY = "stockgallery"
     TRASH = "drop"
     DONATE = "donate"
+    #TODO:
+    # <option value="give">Give to NeoFriend</option>
+    # <option value="auction">Put up for Auction!</option>
     
     _messages = {"stockshop": "You have added",
                 "safetydeposit": "You have added",
@@ -156,6 +159,23 @@ class Item:
         
         pg = form.submit()
         return self._messages[loc] in pg.content
-        
+
     def __repr__(self):
         return "<item \"" + self.name + "\">"
+
+    def feed(self, pet_name):
+        # <option value="Feed to Darling_Eunice">Feed to Darling_Eunice.</option>
+        item_id = self.id
+        feed_form_value = "Feed to {}".format(pet_name)
+        item_url = 'http://www.neopets.com/iteminfo.phtml?obj_id={}'.format(item_id)
+
+        pg = self.usr.getPage(item_url)
+        item_form = pg.form(name='item_form')
+
+        item_form['action'] = feed_form_value
+
+        # NOTE - if you feed /consume an item, perhaps you need to reload inv
+        # or add like, a, flag, "consumed" ...
+        result = item_form.submit()
+        # TODO: make it return something nicer, like those messages [line 161]
+        return result
