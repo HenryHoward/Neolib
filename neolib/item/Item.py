@@ -1,6 +1,6 @@
-""":mod:`MainShopInventory` -- Provides a common interface for manipulating Neopets items
+""":mod:`Item` -- Provides a common interface for manipulating Neopets items
 
-.. module:: MainShopInventory
+.. module:: Item
    :synopsis: Provides a common interface for manipulating Neopets items
 .. moduleauthor:: Joshua Gilman <joshuagilman@gmail.com>
 """
@@ -8,7 +8,7 @@
 from neolib.exceptions import parseException
 import logging
 
-class Item:
+class Item(object):
     
     """Provides a common interface for manipulating Neopets items
     
