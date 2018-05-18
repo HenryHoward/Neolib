@@ -5,7 +5,6 @@
 .. moduleauthor:: Joshua Gilman <joshuagilman@gmail.com>
 """
 
-
 import re
 
 
@@ -35,7 +34,7 @@ class Pet:
     age = ""
     level = ""
 
-    def __create_petinfo_map(self, pet_info):
+    def _create_petinfo_map(self, pet_info):
         table = pet_info.find('table')
         pinfo = {}
         for tr in table.findAll('tr'):
@@ -50,7 +49,7 @@ class Pet:
         # assuming we can use usr.getPage, we can load at least the primay pet's data
         pet_sidebar = page.find_all('div', class_='sidebarModule')[0]
         self.name = pet_sidebar.find('td', class_='sidebarHeader medText').text
-        pet_info = self.__create_petinfo_map(
+        pet_info = self._create_petinfo_map(
                 pet_sidebar.find('td', class_='activePetInfo'))
         self.species = pet_info['species']
         self.health = pet_info['health']
@@ -60,24 +59,21 @@ class Pet:
         self.level = pet_info['level']
 
 
-def get_pet_names(pets_div):
+def _extract_pet_names(pets_div):
     wrapper_div = pets_div.find('div', id='bxwrap')
     # NOTE: i could just use these links
     links = [a['href'] for a in wrapper_div.find_all('a')]
     names = [re.search('.*pet=([^"]+)', l).groups(0)[0] for l in links]
     return names
 
-
-def get_pets(usr):
+def get_pet_names(usr):
     userlookup = usr.getPage('http://www.neopets.com/userlookup.phtml?user={}'.format(usr.username))
     # parse out petnames using div id=userneopets
     pets_div = userlookup.find('div', id='userneopets')
 
-    pet_names = get_pet_names(pets_div)
-    for pet_name in pet_names:
-        # another option is using quickref.phtml, div content, each div has id "petname_details"
-        # lookups do NOT include hunger, happiness
-        petlookup = usr.getPage('http://www.neopets.com/petlookup.phtml?pet={}'.format(pet_name))
-
-    # NOTE: this gives way more info than the summary active pet sidebar module (shrug)
+    pet_names = _extract_pet_names(pets_div)
+    # TODO: Pet init should maybe use these ideas instead of activePetInfo
+    # another option is using quickref.phtml, div content, each div has id "petname_details"
+    # lookups do NOT include hunger, happiness
+    # petlookup = usr.getPage('http://www.neopets.com/petlookup.phtml?pet={}'.format(pet_name))
     return pet_names
