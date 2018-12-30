@@ -1,7 +1,6 @@
-import distribute_setup
-distribute_setup.use_setuptools()
-
 from setuptools import setup, find_packages
+
+
 setup(
     name = "neolib",
     version = "1.0.0",
@@ -9,7 +8,7 @@ setup(
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
-    install_requires = ['lxml', 'beautifulsoup4', 'requests', 'PIL'],
+    install_requires = ['lxml', 'beautifulsoup4', 'requests', 'pillow'],
 
     # metadata for upload to PyPI
     author = "Joshua Gilman",
