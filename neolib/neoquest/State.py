@@ -65,7 +65,10 @@ class State(object):
                 "div", class_="contentModule phpGamesNonPortalView"
                ).find('div', class_='frame')
         self.local_actions = []
-
+        self.tiles = [i for i in page.find_all('img') if
+            i.attrs.get('height', 0) == "40" and
+            i.attrs.get('width', 0) == "40"
+        ]
 
         # NOTE: there's a single grosso unicode char (for some state)
         self.raw_text = self.src_div.get_text().encode('ascii', 'ignore')
@@ -210,16 +213,14 @@ class State(object):
             return State.ASCII_MAP.get(terrain, '?')
 
         """For debugging and console fun, let's create a nethack-kinda map!"""
-        tiles = [
-                i.attrs['src'] for i in
-                self.src_div.find_all('img')
-                if i['height']=='40' and i['width']=='40'
-                ]
+        tiles = [i.attrs['src'] for i in self.tiles]
+        assert len(tiles) == 49
 
         ascii_map = []
 
-        # I *could* hardcode this to 49 and 7 - but what's the fun in that?
         row_len = int(math.floor(math.sqrt(len(tiles))))
+        row_len = 7
+
         for row_idx in range(len(tiles)/row_len):
             ascii_map.append(map(
                 url_to_ascii,
