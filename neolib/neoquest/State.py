@@ -14,6 +14,10 @@ import logging
 from Action import Action
 
 
+ROW_LEN = 7
+MAP_SIZE = ROW_LEN ** 2 # aka 49 tiles in the map always
+
+
 def is_br(bs_tag):
     try:
         return bs_tag.is_empty_element
@@ -65,10 +69,6 @@ class State(object):
                 "div", class_="contentModule phpGamesNonPortalView"
                ).find('div', class_='frame')
         self.local_actions = []
-        self.tiles = [i for i in page.find_all('img') if
-            i.attrs.get('height', 0) == "40" and
-            i.attrs.get('width', 0) == "40"
-        ]
 
         # NOTE: there's a single grosso unicode char (for some state)
         self.raw_text = self.src_div.get_text().encode('ascii', 'ignore')
@@ -214,15 +214,15 @@ class State(object):
             return State.ASCII_MAP.get(terrain, '?')
 
         """For debugging and console fun, let's create a nethack-kinda map!"""
-        tiles = [i.attrs['src'] for i in self.tiles]
-        assert len(tiles) == 49
+        tiles = [
+	    i.attrs['src'] for i in
+	    self.src_div.find_all('img')
+	    if i['height']=='40' and i['width']=='40'
+	]
+        assert len(tiles) == MAP_SIZE
 
         ascii_map = []
-
-        row_len = int(math.floor(math.sqrt(len(tiles))))
-        row_len = 7
-
-        for row_idx in range(len(tiles)/row_len):
+        for row_idx in range(len(tiles)/ROW_LEN):
             ascii_map.append(map(
                 url_to_ascii,
                 tiles[row_idx*row_len:(row_idx+1)*row_len]
