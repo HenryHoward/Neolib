@@ -176,8 +176,9 @@ class State(object):
     def _parse_skills(self, src_div):
         sdc = src_div.contents[2]
 
-        # idc that this is stupid
-        how_many = re.findall('.*(You currently have.*to spend\.).*', sdc.get_text(), flags=re.DOTALL)[0]
+        # this is stupid - also is not presetn if you have no points to spend. :|
+        how_many = re.findall('.*(You currently have.*to spend\.).*', sdc.get_text(), flags=re.DOTALL)
+        how_many = how_many[0] if how_many else '0'
         skill_tbs = sdc.find('table').find_all('table')
 
         skills = {}
