@@ -47,7 +47,7 @@ class Wheel:
                 logging.getLogger("neolib.wheel").info("Wheel spin failed with error message: " + resp['errmsg'])
                 return False
         
-        p = BeautifulSoup(resp['reply']) 
+        p = BeautifulSoup(resp['reply'], "lxml") 
         
         self.prize = p.img.text      
         self.message = p.center.text.replace(self.prize, "")
