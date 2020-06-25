@@ -1,3 +1,10 @@
+This is a fork of kemcbride/Neolib which is a fork of JDongian/Neolib
+
+This is an attempt to make the library functional in the year 2020 by accounting for changes in the website and porting the library to Python 3
+
+-Henry
+
+
 Neolib
 ======
 
@@ -93,7 +100,7 @@ Buying Items
 
 Another common feature required for programs is the ability to buy items. Neolib currently supports the ability to buy items from both user shops and main shops. Below is an example of searching for a 'Mau Codestone' with the Shop Wizard and buying the first result.
 
-```python 
+```python
 >>> from neolib.shop.ShopWizard import ShopWizard
 >>> res = ShopWizard.search(usr, 'Mau Codestone')
 >>> res.buy(0)
