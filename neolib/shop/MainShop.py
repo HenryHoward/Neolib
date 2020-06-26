@@ -12,27 +12,28 @@ class MainShop:
     """Provides an interface for loading a main shop
 
     Attributes
-       usr (User) -- Associated user
-       id (str) -- Shop ID
-       name (str) -- Shop name
+        usr (User) -- Associated user
+        id (str) -- Shop ID
+        name (str) -- Shop name
+        inventory (MainShopInventory object) -- Shop's inventory when it was
+            last loaded
 
     Initialization
-       MainShop(usr, shopID)
+        MainShop(usr, shopID)
 
-       Initializes the class with the user and shop ID
-       a new quest and load the quest details.
+        Initializes the class with the user and shop ID
 
-       Parameters
-          usr (User) -- User to use when loading the inventory and buying items
-          shopID (str) -- Shop ID
+        Parameters
+            usr (User) -- User to use when loading the inventory and buying
+            items shopID (str) -- Shop ID
 
     Example
-       >>> ms = MainShop(usr, "1")
-       >>> for item in ms.inventory:
-       ...     print item.name
-       Lupe Soup
-       Red Bitten Apple
-       ...
+        >>> ms = MainShop(usr, "1")
+        >>> for item in ms.inventory:
+        ...     print item.name
+        Lupe Soup
+        Red Bitten Apple
+        ...
     """
 
     usr = None
