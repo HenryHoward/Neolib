@@ -5,7 +5,7 @@
 .. moduleauthor:: Kelly McBride <kemcbride28@gmail.com>
 """
 
-from Stock import Stock
+from neolib.stock.Stock import Stock
 
 
 BARGAIN_STOCKS_URL = "http://www.neopets.com/stockmarket.phtml?type=list&search=+-invalid_characters-+&bargain=true"

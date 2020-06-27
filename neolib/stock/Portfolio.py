@@ -5,7 +5,7 @@
 .. moduleauthor:: Kelly McBride <kemcbride28@gmail.com>
 """
 
-from Stock import Stock
+from neolib.stock.Stock import Stock
 import requests
 
 class Portfolio:
@@ -100,7 +100,7 @@ class Portfolio:
         remaining_input = amount
         payload = {}
         for i in inputs:
-            # Think! clean_numeric should be a common function for me!          
+            # Think! clean_numeric should be a common function for me!
             capacity = int(i.parent.parent.find('td').string.replace(',',''))
             if capacity >= remaining_input:
                 payload[i['name']] = remaining_input
@@ -119,7 +119,5 @@ class Portfolio:
 
         # Detect whether it was successful by telling if that text that we sold is in it
         if "successful transaction" in result.content:
-            print "Successful sale!"
+            print("Successful sale!")
         return result
-
-

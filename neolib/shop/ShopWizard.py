@@ -173,12 +173,13 @@ class ShopWizard:
                 prices.append(-1)
                 continue
 
-            prices.append(int(results[0].price))
-            dets[str(results[0].price)] = (results[0].owner, results[0].id)
+            prices.append(int(results[item].price))
+            dets[str(results[item].price)] = (results[item].owner, results[item].id)
 
             time.sleep(ShopWizard.waitTime)
 
         # Determines if item was UB
+        print(prices)
         if sum(prices) == len(prices) * -1:
             return False
 

@@ -17,6 +17,7 @@ from neolib.user.Bank import Bank
 from neolib.user.hooks import *
 from neolib.user.Pet import Pet
 from neolib.user.SDB import SDB
+from neolib.user.CurrentFunds import CurrentFunds
 import logging
 import zlib
 import base64
@@ -99,6 +100,7 @@ class User:
     bank = None
     shop = None
     SDB = None
+    current_funds = None
 
     nps = 0
     activePet = None
@@ -129,6 +131,7 @@ class User:
         self.shop = UserShop(self)
         self.bank = Bank(self)
         self.SDB = SDB(self)
+        self.current_funds = CurrentFunds(self)
 
         # Each User instance needs a unique session
         self.session = Page.newSession()
