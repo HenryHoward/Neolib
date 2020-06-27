@@ -30,5 +30,11 @@ price = to_buy[0].curr_price
 #Stocks are bought and sold using a Portfolio() object:
 stock_portfolio = Portfolio(usr)
 
-#Buy the maximum number of our chosen stock
+#Sell any stocks in our portfolio that have risen by >=20%:
+for stock in stock_portfolio.stocks:
+    if stock.change >= 20:
+        print('selling')
+        stock_portfolio.sell(stock.ticker, stock.qty)
+
+#Buy the maximum number of the day's select stock
 stock_portfolio.buy(ticker, min(1000, math.floor(available_funds/price)))

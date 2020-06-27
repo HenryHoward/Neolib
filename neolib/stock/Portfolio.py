@@ -67,8 +67,14 @@ class Portfolio:
         # take the ones that have a background color set.
         rows = [e for e in pagedata.find_all('tr') if e.has_attr('bgcolor') and (e.get('bgcolor') == '#EEEEFF' or e.get('bgcolor') == '#FFFFFF')]
         self.stocks = [self.extract_row_data(row) for row in rows]
+        changes = [float(stock['change'].replace('%', '').replace(',', '')) for stock in self.stocks]
+        qtys = [int(stock['qty'].replace(',', '')) for stock in self.stocks]
         # Filter rows that are the wrong length - we get the sub-dropdown-rows, too
         self.stocks = [Stock(row) for row in self.stocks if len(row) == len(self.legend)]
+        #add the % change as an attribute to each Stock object
+        for n in range(0, len(self.stocks)):
+            self.stocks[n].change = changes[n]
+            self.stocks[n].qty = qtys[n]
 
     def buy(self, ticker, amount):
         """ Buy the given amount of stock identified by ticker (if you have the funds!)
