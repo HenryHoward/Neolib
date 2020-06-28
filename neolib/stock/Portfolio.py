@@ -44,7 +44,7 @@ class Portfolio:
 
     def verify_sell_input_tag(self, input_tag, ticker):
         return (
-            type(input_tag.get('name')) == unicode and
+            type(input_tag.get('name')) == str and
             input_tag.get('name').startswith('sell[{}]'.format(ticker))
             )
 
@@ -124,6 +124,6 @@ class Portfolio:
         result = self.usr.session.post('http://www.neopets.com/process_stockmarket.phtml', data=payload)
 
         # Detect whether it was successful by telling if that text that we sold is in it
-        if "successful transaction" in result.content:
+        if "successful transaction" in str(result.content):
             print("Successful sale!")
         return result
