@@ -170,7 +170,7 @@ class User:
         """
 
         # Request index to obtain initial cookies and look more human
-        pg = self.getPage("http://www.neopets.com")
+        pg = self.getPage("http://www.neopets.com/login")
 
         form = pg.form(action="/login.phtml")
         form.update({'username': self.username, 'password': self.password})
