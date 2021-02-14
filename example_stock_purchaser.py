@@ -37,7 +37,7 @@ for stock in stock_portfolio.stocks:
 
 #Load information about the user's current funds into User object
 usr.current_funds.load()
-available_funds = usr.current_funds.amount
+available_funds = usr.current_funds.amount - 20 #20 np is required to sell a stock
 
 #Buy the maximum number of the day's select stock
 buy_amount = min(1000, math.floor(available_funds/price))
