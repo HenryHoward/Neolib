@@ -75,6 +75,10 @@ class Portfolio:
         for n in range(0, len(self.stocks)):
             self.stocks[n].change = changes[n]
             self.stocks[n].qty = qtys[n]
+        #get the total market value of the portfolio
+        total_row = [e for e in pagedata.find_all('tr') if e.has_attr('bgcolor') and (e.get('bgcolor') == '#BBBBBB')][0]
+        print(total_row)
+        self.total_market_value = float(total_row.find_all('td')[3].text.strip().replace(',',''))
 
     def buy(self, ticker, amount):
         """ Buy the given amount of stock identified by ticker (if you have the funds!)

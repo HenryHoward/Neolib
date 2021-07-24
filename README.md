@@ -4,7 +4,6 @@ This is an attempt to make the library functional in the year 2021 by accounting
 
 -Henry
 
-
 Neolib
 ======
 
@@ -23,6 +22,12 @@ Alternatively you can download the tar archive above and use setuptools to insta
 
 ```
 python setup.py install
+```
+
+Dependencies:
+```
+pip3 install requests
+pip3 install beautifulsoup4
 ```
 
 Getting Started
@@ -123,3 +128,8 @@ True
 >>> usr.inventory.load()
 >>> 'Peanut' in usr.inventory
 ```
+
+Purchasing and selling stocks
+------
+
+An example script allowing the automatic purchase and sale of stocks from the neopets stock market is available in example_stock_purchaser.py

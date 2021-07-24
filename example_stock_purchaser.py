@@ -47,4 +47,6 @@ stock_portfolio.buy(ticker, buy_amount)
 if buy_amount>0:
     print('>{} of {} purchased at {}'.format(buy_amount, ticker, price))
 
+usr.current_funds.load()
+print('total np: {}'.format(stock_portfolio.total_market_value + usr.current_funds.amount))
 print('=====')
