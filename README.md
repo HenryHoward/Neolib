@@ -9,22 +9,9 @@ Neolib
 
 Neolib is an in-depth and robust Python library designed to assist programmers in creating programs which automate mundane tasks on the popular browser based game, Neopets. The goal of Neolib is to objectify Neopets by translating it's many objects and tasks into classes and functions that represent them.
 
-Installation
+Dependencies
 ======
 
-The easiest way to install Neolib is by downloading the PyPi distribution using easy_install:
-
-```
-easy_install neolib
-```
-
-Alternatively you can download the tar archive above and use setuptools to install it:
-
-```
-python setup.py install
-```
-
-Dependencies:
 ```
 pip3 install requests
 pip3 install beautifulsoup4
@@ -70,7 +57,7 @@ The above example shows how setting the savePassword attribute to True will save
 Basic Inventory Management
 ------
 
-Another common feature used in programs is inventory management. Below we assume the user has a Green Apple in their inventory. We first stock the item in their shop, price the item and update the shop. Then we remove it from the shop. place it in the SDB, and finally move it back to the user's inventory.
+Another common feature used in programs is inventory management. Below we assume the user has a Green Apple in their inventory. We first stock the item in their shop, price the item and update the shop. Then we remove it from the shop. place it in the Safe Deposit Box, and finally move it back to the user's inventory.
 
 ```python
 >>> from neolib.item.Item import Item
