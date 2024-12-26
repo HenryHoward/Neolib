@@ -1,6 +1,6 @@
 This is a fork of kemcbride/Neolib which is a fork of JDongian/Neolib
 
-This is an attempt to make the library functional in the year 2021 by accounting for changes in the website and porting the library to Python 3
+This is currently not working as of 2024. Neopets changed their login system to use capcha
 
 -Henry
 
